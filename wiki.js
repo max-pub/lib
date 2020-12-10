@@ -40,6 +40,36 @@ export async function languages(language, title, options = {}) {
 	return options.raw ? output : Object.fromEntries(output.map(x => [x.lang, x['*']]));
 }
 
+export async function box(language, title, boxName, options={}) {
+	let text = await page(language, title);
+	let start = text.search('{{' + boxName + '\n')
+	let end = text.search('\n}}\n')
+	// console.log('se', start, end)
+	let lines = text.slice(start, end).split('\n').slice(1)
+	// console.log(lines)
+	let output = {}
+	let key, val;
+	for (let line of lines) {
+		if (line.startsWith('|')) { // lines with a key
+			key = line.split('=')[0].slice(1).trim()
+			if(options.lowerCaseKeys) key = key.toLowerCase()
+			if(options.alphaNumericalKeys) key = key.replace(/[^a-z]/gi,'_')
+			val = line.split('=').slice(1).join('=').trim()
+			if(val.startsWith('*')) // multi-line-entry
+				output[key] = [val.slice(1).trim()]
+			else output[key] = val;
+		}
+		if (line.startsWith('*')) { // continuing previous line
+			val = line.slice(1).trim()
+			output[key].push(val)
+		}
+		// if(!output[key]) output[key] = [];
+		// output[key].push(val)
+	}
+	// console.log(output)
+	return output
+}
+
 export default {
-	search, page, category, languages
+	search, page, category, languages, box
 }

@@ -1,28 +1,33 @@
 console.log('noti-fy', import.meta.url);
-function NODE(name, attributes = {}, ...children ) {
-	let node = document.createElement(name);
-	for (let key in attributes)
-		node.setAttribute(key, attributes[key]);
-	node.ADD(...children)
-	return node;
-}
-Element.prototype.ADD = function addChildren(...children){
-	for (let child of children)
-		this.appendChild(typeof child == 'string' ? document.createTextNode(child) : child);
-	return this;	
-}
-class XML {
-	static parse(string, type = 'xml') {
-		return new DOMParser().parseFromString(string.replace(/xmlns=".*?"/g, ''), 'text/' + type)
-	}
-	static stringify(DOM) {
-		return new XMLSerializer().serializeToString(DOM).replace(/xmlns=".*?"/g, '')
-	}
+export default class XML {
+    static parse(string, type = 'text/xml') { // like JSON.parse
+        return new DOMParser().parseFromString(string.replace(/xmlns=".*?"/g, ''), type)
+    }
+    static stringify(DOM) { // like JSON.stringify
+        return new XMLSerializer().serializeToString(DOM).replace(/xmlns=".*?"/g, '')
+    }
+     static async fetch(url) {
+        return XML.parse(await fetch(url).then(x => x.text()))
+    }
+    static tag(tagName, attributes){
+        let tag = XML.parse(`<${tagName}/>`);
+        for(let key in attributes) tag.firstChild.setAttribute(key,attributes[key]);
+        return tag.firstChild;
+    }
+    static transform(xml, xsl, stringOutput = true) {
+        let processor = new XSLTProcessor();
+        processor.importStylesheet(typeof xsl == 'string' ? XML.parse(xsl) : xsl);
+        let output = processor.transformToDocument(typeof xml == 'string' ? XML.parse(xml) : xml);
+        return stringOutput ? XML.stringify(output) : output;
+    }
 }
 XMLDocument.prototype.stringify = XML.stringify
 Element.prototype.stringify = XML.stringify
 const HTML = document.createElement('template');
-HTML.innerHTML = ``;
+HTML.innerHTML = `___HTML___`;
+const XSLT = new DOMParser().parseFromString(`___XSLT___`, 'text/xml');
+const XSLP = new XSLTProcessor();
+XSLP.importStylesheet(XSLT);
 let STYLE = document.createElement('style');
 STYLE.appendChild(document.createTextNode(`:host {
 		display: inline-block;
@@ -52,12 +57,14 @@ class WebTag extends HTMLElement {
 		this.$applyHTML(); //: HTML
 		this.$attachMutationObservers();
 		this.$attachEventListeners();
+		await this.$render() //: XSLT
 		this.$onReady(); //: onReady
 	}
 	$attachMutationObservers() {
 		this.modelObserver = new MutationObserver(events => {
 			if ((events[0].type == 'attributes') && (events[0].target == this)) {
 			} else {
+				if (this.$autoUpdate !== false) this.$render(events); //: XSLT
 			}
 		}).observe(this, { attributes: true, characterData: true, attributeOldValue: true, childList: true, subtree: true });
 	}
@@ -87,6 +94,26 @@ class WebTag extends HTMLElement {
 			HTML = new DOMParser().parseFromString(HTML, 'text/html').firstChild
 		this.$view.appendChild(HTML);
 	}
+	get $data() {
+		return this;
+	}
+	set $data(XML) {
+		this.$clear(this.$data);
+		if (typeof XML == 'string')
+			XML = new DOMParser().parseFromString(XML, 'text/xml').firstChild
+		this.appendChild(XML);
+	}
+	$render(events) {
+		return new Promise((resolve, reject) => {
+			window.requestAnimationFrame(t => {
+				const t1 = new Date().getTime();
+				let xml = new DOMParser().parseFromString(new XMLSerializer().serializeToString(this).replace(/xmlns=".*?"/g, ''), 'text/xml'); // some platforms need to reparse the xml
+				let output = XSLP.transformToFragment(xml, document);
+				this.$view = output;
+				resolve()
+			});
+		});
+	}
 };
 class noti_fy extends WebTag {
 		$onReady() {
@@ -99,4 +126,4 @@ class noti_fy extends WebTag {
 			setTimeout(e => this.$view.removeChild(noti), this.getAttribute('timeout') ?? 1000)
 		}
 	}
-window.customElements.define('noti-fy', noti_fy)
+window.customElements.define('noti-fy', noti_fy)
