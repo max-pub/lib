@@ -2,11 +2,14 @@ export class Wiki {
 	constructor(language) {
 		this.language = language
 	}
-	async search(query) {
+
+	async search(query, options = {}) {
 		// console.log('search', language, query)
 		let result = await fetch(`https://${this.language}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${query}&format=json&origin=*`).then(x => x.json());
 		// console.log('search result', result)
-		return result?.query?.search;
+		let list = result?.query?.search;
+		if (options.min) return list.map(x => x.title)
+		return list
 	}
 
 	page(title) {
