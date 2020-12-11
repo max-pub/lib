@@ -26,7 +26,7 @@ export class Wiki {
 		do {
 			let result = await fetch(`https://${this.language}.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=info&generator=categorymembers&gcmtitle=${prefix[this.language]}:${categoryName}&gcmlimit=max${gcmcontinue ? `&gcmcontinue=${gcmcontinue}` : ""}`).then(x => x.json());
 			titles = [...titles, ...Object.values(result.query.pages).map(x => x.title)]
-			console.log(`loaded ${titles.length} results`)
+			// console.log(`loaded ${titles.length} results`)
 			gcmcontinue = result?.continue?.gcmcontinue;
 		} while (gcmcontinue)
 		return titles;
