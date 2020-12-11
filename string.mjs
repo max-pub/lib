@@ -15,7 +15,7 @@ export function toCamelCase(string) {
 }
 
 export function findGroups(string, regex) {
-	console.log('find',string,regex)
+	// console.log('find',string,regex)
 	return Array.from(string.matchAll(regex))
 		.map(i => i.slice(1)) // only groups, not full match
 	// .flat();
