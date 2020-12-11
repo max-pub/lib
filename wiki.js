@@ -73,8 +73,9 @@ class WikiPage {
 		for (let line of lines) {
 			if (line.startsWith('|')) { // lines with a key
 				key = line.split('=')[0].slice(1).trim()
-				if (options.lowerCaseKeys) key = key.toLowerCase()
-				if (options.alphaNumericalKeys) key = key.replace(/[^a-z]/gi, '_')
+				if(options.camelCaseKeys)  key = (await import('./string.mjs')).toCamelCase(key)
+				// if (options.lowerCaseKeys) key = key.toLowerCase()
+				// if (options.alphaNumericalKeys) key = key.replace(/[^a-z]/gi, '_')
 				val = line.split('=').slice(1).join('=').trim()
 				if (val.startsWith('*')) // multi-line-entry
 					output[key] = [val.slice(1).trim()]
@@ -84,10 +85,13 @@ class WikiPage {
 				val = line.slice(1).trim()
 				output[key].push(val)
 			}
+			// if(options.parseValues) 
 		}
 		return output
 	}
 }
+
+
 
 export default function (language) { return new Wiki(language) }
 
