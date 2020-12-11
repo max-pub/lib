@@ -66,6 +66,8 @@ class WikiPage {
 	async box(boxName, options = {}) {
 		let text = await this.text();
 		let start = text.search('{{' + boxName + '\n')
+		// console.log('st',start)
+		if(start==-1) return false;
 		let end = text.search('\n}}\n')
 		let lines = text.slice(start, end).split('\n').slice(1)
 		let output = {}
