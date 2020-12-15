@@ -12,6 +12,6 @@ import wiki from './wiki.js';
 
 
 // let box = await wiki('de').page('Acetylsalicylsäure').box('Infobox Chemikalie')
-let box = await wiki('de').page('Acetylsalicylsäure').box('Infobox Chemikalie2', { camelCaseKeys: true })
+let box = await wiki('de').page('Acetylsalicylsäure').box('Infobox Chemikalie', { camelCaseKeys: true, onlyArrays:true })
 console.log('box', box)
 
