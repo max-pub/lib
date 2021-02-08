@@ -1,7 +1,7 @@
 
 
 export function toTitleCase(string) {
-	return string.split(' ').filter(x=>x)
+	return string.split(' ').filter(x => x)
 		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
 		.join(' ')
 }
@@ -25,6 +25,13 @@ export function removeTags(string) {
 	return string.replace(/<.*?>/g, '')
 }
 
+export function blocks(string) {
+	return string.split('\r\n\r\n').flatMap(x => x.split('\r\r')).flatMap(x => x.split('\n\n'))
+}
+export function lines(string) {
+	return string.split('\r\n').flatMap(x => x.split('\r')).flatMap(x => x.split('\n'))
+}
+
 export default {
-	toTitleCase, toCamelCase, findGroups, removeTags
+	toTitleCase, toCamelCase, findGroups, removeTags, blocks, lines
 }
