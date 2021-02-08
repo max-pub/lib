@@ -51,10 +51,18 @@ export class Log {
 		if (this._autoFlush) this.flush()
 		return this;
 	}
+	pad(left, right) {
+		this._pad = { left, right }
+		return this;
+	}
 	text(text, options = {}) {
 		text = String(text)
-		if (options.r) text = text.padEnd(options.r, ' ')
-		if (options.l) text = text.padStart(options.l, ' ')
+		// if (options.r) text = text.padEnd(options.r, ' ')
+		// if (options.l) text = text.padStart(options.l, ' ')
+		text = text
+			.padEnd(this._pad?.right ?? 0, ' ')
+			.padStart(this._pad?.left ?? 0, ' ')
+		this._pad = null
 		return this.string(text).done()
 	}
 
