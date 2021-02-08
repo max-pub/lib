@@ -10,6 +10,7 @@ export class Log {
 	static WARNING = 2;
 	static SUCCESS = 3;
 	static INFO = 4;
+	static DEBUG = 5;
 
 	_level = Log.INFO;
 
