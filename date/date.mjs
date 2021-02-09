@@ -2,6 +2,7 @@
 
 export function format(date, format, locale = 'lookup') {
 	// if (!locale) locale = 'lookup';
+	// console.log('format',date,format,locale)
 	var str = c => date.toLocaleString(locale, c);
 	var n = 'numeric';
 	var _2 = '2-digit';
@@ -25,9 +26,11 @@ export function format(date, format, locale = 'lookup') {
 	};
 	if (f.mm < 10) f.mm = '0' + f.mm;// for browser bug
 	if (f.ss < 10) f.ss = '0' + f.ss;// for browser bug
-
-	for (var typ in f)
+	console.log('all',f)
+	for (var typ in f){
+		// console.log('format',typ,format)
 		var format = format.replace(typ, f[typ]);
+	}
 	return format;
 }
 
@@ -57,7 +60,7 @@ export function getWeekNumber(d) {
 	// Get first day of year
 	var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
 	// Calculate full weeks to nearest Thursday
-	var weekNo = Math.ceistr((((d - yearStart) / 86400000) + 1) / 7);
+	var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 	// Return array of year and week number
 	return { year: d.getUTCFullYear(), week: weekNo };
 }

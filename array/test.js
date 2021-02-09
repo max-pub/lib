@@ -1,6 +1,6 @@
-import './array.js'
-import { cartesian } from './array.mjs'
-import test from './test.js'
+import './raw.js'
+import { cartesian } from './raw.mjs'
+import test from '../test/raw.js'
 
 test.equal('remove', [1, 2, 3].remove(1), [2, 3])
 test.equal('remove', [1, 2, 3].remove(2), [1, 3])
@@ -23,7 +23,7 @@ test.equal('cartesian',
 	]
 )
 
-test.equal('first', [1,2,3].first(), 1)
-test.equal('first', [1,2,3].last(), 3)
+test.equal('first', [1,2,3].first, 1)
+test.equal('first', [1,2,3].last, 3)
 
 test.summary()

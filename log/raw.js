@@ -11,8 +11,9 @@ export class Log {
 	static SUCCESS = 3;
 	static INFO = 4;
 	static DEBUG = 5;
-
+	_counter = {};
 	_level = Log.INFO;
+	_start = new Date().getTime()
 
 	_autoFlush = true;
 	constructor() { this.reset() }
@@ -28,7 +29,8 @@ export class Log {
 	string(s) { if (this._mode > this._level) return this; this._string.push(s); return this; }
 	get tab() { return this.string('\t') }
 	get break() { return this.string('\n') }
-	get dash() { return this.string(' - ') }
+	get dash() { return this.string('-') }
+	get dot() { return this.string('.') }
 
 
 	format(f) { if (this._mode > this._level) return this; this._format.push(f); return this; }
@@ -40,6 +42,7 @@ export class Log {
 	get red() { return this.color('red') }
 	get orange() { return this.color('orange') }
 	get silver() { return this.color('silver') }
+	get gray() { return this.color('gray') }
 
 
 	mode(m) { this._mode = m; return this; }
@@ -69,15 +72,32 @@ export class Log {
 
 	number(n, options = {}) {
 		n = Number.parseFloat(n)
-		if (options.r) n = n.toFixed(options.r)
-		if (options.l) n = String(n).padStart(options.l, '0')
+		n = n.toFixed(this._pad?.right ?? 0)
+		n = String(n).padStart(this._pad?.left ?? 0, ' ')
 		return this.string(n).done()
 		// return this.string('%f').format(n).done()
+	}
+	bool(b) {
+
 	}
 	object(o) {
 		return this.color('auto').string('%o').format(o).done()
 	}
 
+	get date() {
+		return this.text(new Date().toISOString().slice(0, 10))
+	}
+	get time() {
+		return this.text(new Date().toISOString().slice(11, 19))
+	}
+	get duration() {
+		return this.pad(8,3).number((new Date() - this._start)/1000)
+	}
+	count(counter = '') {
+		if (!this._counter[counter])
+			this._counter[counter] = 0
+		return this.text(++this._counter[counter]);
+	}
 	reset() {
 		this._string = [];
 		this._format = [];

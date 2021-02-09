@@ -1,13 +1,13 @@
 
 
-export function trim(array) {
-	return array.map(x => x.trim());
-}
+// export function trim(array) {
+// 	return array.map(x => x.trim());
+// }
 
 export function remove(array, val) {
 	let index = array.indexOf(val)
 	if (index < 0) return array;
-	return [...array.slice(0, index), ...array.slice(index + 1)]
+	return [...array.slice(0, index), ...array.slice(index + 1)] // splice alters the source?
 }
 
 export function unique(array) {
@@ -85,5 +85,5 @@ export function cartesian(...a) {
 
 
 export default {
-	trim, remove, unique, clean, first, last, shuffle, array, intersection, union, cartesian
+	remove, unique, clean, first, last, shuffle, array, intersection, union, cartesian
 }

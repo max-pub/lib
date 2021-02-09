@@ -1,4 +1,4 @@
-import './dist/noti-fy.tag.js';
+import '../dist/noti-fy.tag.js';
 if(!document.querySelector('noti-fy'))
 	document.body.appendChild(document.createElement('noti-fy'))
 

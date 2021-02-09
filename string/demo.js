@@ -1,4 +1,4 @@
-import './string.js';
+import './raw.js';
 console.log('toTitleCase', 'crazy SHIT <b>big</b> mAn'.toTitleCase())
 console.log('toCamelCase', 'crazy SHIT <b>BIG</b> mAn'.toCamelCase())
 console.log('toCamelCase', 'crazy SHIT <b>BIG</b> mAn'.removeTags().toCamelCase())
